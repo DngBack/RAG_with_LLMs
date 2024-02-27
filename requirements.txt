@@ -8,6 +8,7 @@ faiss-cpu
 tiktoken
 huggingface-hub
 pypdf
-llama-cpp-python
+llama-cpp-python 
+
 
 

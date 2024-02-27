@@ -7,6 +7,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.memory import ConversationBufferMemory
 from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders import TextLoader
+from langchain.document_loaders import Docx2txtLoader
 import os
 import tempfile
 
@@ -54,7 +56,7 @@ def create_conversational_chain(vector_store):
     # Create llm
     llm = LlamaCpp(
     streaming = True,
-    model_path="models/mistral-7b-instruct-v0.2.Q4_0.gguf",
+    model_path="model/mixtral-8x7b-instruct-v0.1.Q2_K.gguf",
     temperature=0.75,
     top_p=1, 
     verbose=True,
@@ -71,7 +73,7 @@ def create_conversational_chain(vector_store):
 def main():
     # Initialize session state
     initialize_session_state()
-    st.title("Multi-PDF ChatBot using Mistral-7B-Instruct :books:")
+    st.title("Chatbot")
     # Initialize Streamlit
     st.sidebar.title("Document Processing")
     uploaded_files = st.sidebar.file_uploader("Upload files", accept_multiple_files=True)
@@ -88,6 +90,11 @@ def main():
             loader = None
             if file_extension == ".pdf":
                 loader = PyPDFLoader(temp_file_path)
+            elif file_extension == ".docx" or file_extension == ".doc":
+                loader = Docx2txtLoader(temp_file_path)
+            elif file_extension == ".txt":
+                loader = TextLoader(temp_file_path)
+
 
             if loader:
                 text.extend(loader.load())
